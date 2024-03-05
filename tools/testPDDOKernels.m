@@ -3,35 +3,54 @@ clear all;
 
 addpath('..\data')
 addpath('C:\Users\docta\Documents\Thesis\FourthPDENoiseRemovalPDDO\data')
-g20 = table2array(readtable('g20.csv'));
-g02 = table2array(readtable('g02.csv'));
+% g20 = table2array(readtable('g20.csv'));
+% g02 = table2array(readtable('g02.csv'));
 
 
 PDDOKernelMesh = table2array(readtable('PDDOKernelMesh.csv'));
-%[X,Y] = meshgrid(PDDOKernelMesh(:,1),PDDOKernelMesh(:,2));
-surface = table2array(readtable('surface.csv'));
-%figure; plot(PDDOKernelMesh(:,1),PDDOKernelMesh(:,2),'o')
+sphericalSurface = table2array(readtable('sphericalSurface.csv'));
+sphericalSurfaceNoisy = table2array(readtable('sphericalSurfaceNoisy.csv'));
 
-figure; surf(reshape(PDDOKernelMesh(:,1),[512 512]),reshape(PDDOKernelMesh(:,2),[512 512]),reshape(sqrt(surface),[512 512]))
+cylindricalSurface = table2array(readtable('cylindricalSurface.csv'));
+cylindricalSurfaceNoisy = table2array(readtable('cylindricalSurfaceNoisy.csv'));
+
+figure; surf(sphericalSurface)
+figure; imagesc(sphericalSurfaceNoisy); colormap gray;
+figure; surf(sphericalSurfaceNoisy)
+
+figure; surf(cylindricalSurface)
+figure; imagesc(cylindricalSurface); colormap gray;
+figure; imagesc(cylindricalSurfaceNoisy); colormap gray;
+figure; surf(cylindricalSurfaceNoisy)
 
 
-
-
-
-dt = 0.00000001;
-numSteps = 1*5000;
-OGImage = imread('lena.png');
-noisyImage = imread('noisyLena.png');
+dt = 0.000000001;
+numSteps = 4*5000;
 g20 = table2array(readtable('g20.csv'));
 g02 = table2array(readtable('g02.csv'));
-figure;
+
+
+% 
+% for i=0:numSteps
+%     filteredImage = conv2(sphericalSurfaceNoisy,g20+g02,'same');
+%     filteredImage = sphericalSurfaceNoisy +  dt*filteredImage;
+%     sphericalSurfaceNoisy = filteredImage;
+% 
+% end
+% figure; imagesc(filteredImage); colormap gray;
+% figure; surf(filteredImage);
+
+
+
 for i=0:numSteps
-    filteredImage = conv2(double(noisyImage),g20+g02,'same');
-    filteredImage = double(noisyImage) +  dt*filteredImage;
-    noisyImage = filteredImage;
-    imagesc(filteredImage);
-    colormap gray;
+    filteredImage = conv2(cylindricalSurfaceNoisy,g20+g02,'same');
+    filteredImage = cylindricalSurfaceNoisy +  dt*filteredImage;
+    cylindricalSurfaceNoisy = filteredImage;
+    
 end
+figure; imagesc(filteredImage); colormap gray;
+figure; surf(filteredImage);
+
 
 
 %figure; imagesc(image);colormap gray
