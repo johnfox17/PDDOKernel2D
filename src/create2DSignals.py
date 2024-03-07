@@ -24,15 +24,22 @@ class create2DSignals:
         self.sphericalSurface = np.array((self.PDDOCoordinateMesh[:,0]-0.5)**2 + (self.PDDOCoordinateMesh[:,1]-0.5)**2).reshape((self.Nx,self.Ny))
 
     def createCylindricalSurface(self):
-        self.cylindricalSurface = np.ones(self.Nx*self.Ny)
+        self.cylindricalSurface = np.zeros(self.Nx*self.Ny)
         centerIndex = np.linalg.norm(np.array([self.PDDOCoordinateMesh[:,0]-0.5, \
                 self.PDDOCoordinateMesh[:,1]-0.5]),axis=0).argmin()
         self.cylindricalSurface[np.where(np.linalg.norm(np.array([self.PDDOCoordinateMesh[:,0] - \
                 self.PDDOCoordinateMesh[centerIndex,0], self.PDDOCoordinateMesh[:,1] - \
-                self.PDDOCoordinateMesh[centerIndex,1]]),axis=0)<0.25)] = 0
+                self.PDDOCoordinateMesh[centerIndex,1]]),axis=0)<0.25)] = 1
         self.cylindricalSurface = self.cylindricalSurface.reshape((self.Nx,self.Ny))
 
     
+    def createSurface(self):
+        self.surface = np.zeros(self.Nx*self.Ny)
+        for iCoord in range(self.Nx*self.Ny):
+            self.surface[iCoord] = -3*self.PDDOCoordinateMesh[iCoord,0]**2+2*self.PDDOCoordinateMesh[iCoord,1]**2+1
+        self.surface = self.surface.reshape((self.Nx,self.Ny))
+
+
     def addNoise(self):
         noise = np.random.normal(0, 0.15, size= (self.Nx, self.Ny))
         self.sphericalSurfaceNoisy = self.sphericalSurface + noise
@@ -42,4 +49,5 @@ class create2DSignals:
         self.createCoordinates()
         self.createSphericalSurface()
         self.createCylindricalSurface()
+        self.createSurface()
         self.addNoise()

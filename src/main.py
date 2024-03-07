@@ -1,7 +1,7 @@
 import numpy as np
 import secondOrderDerivativePDDOKernel as PDDOKernel2ndOrder
 import create2DSignals
-
+from scipy import signal
 
 
 def main():
@@ -11,6 +11,7 @@ def main():
 
     signals = create2DSignals.create2DSignals()
     signals.solve()
+
 
     np.savetxt('C:\\Users\\docta\\Documents\\Thesis\\PDDOKernel2D\\data\\g20.csv', PDDOKernel2nd.g20, delimiter=",")
     np.savetxt('C:\\Users\\docta\\Documents\\Thesis\\PDDOKernel2D\\data\\g02.csv', PDDOKernel2nd.g02, delimiter=",")
@@ -23,6 +24,7 @@ def main():
     np.savetxt('C:\\Users\\docta\\Documents\\Thesis\\PDDOKernel2D\\data\\sphericalSurfaceNoisy.csv', signals.sphericalSurfaceNoisy, delimiter=",")
 
     np.savetxt('C:\\Users\\docta\\Documents\\Thesis\\PDDOKernel2D\\data\\cylindricalSurfaceNoisy.csv', signals.cylindricalSurfaceNoisy, delimiter=",")
+    np.savetxt('C:\\Users\\docta\\Documents\\Thesis\\PDDOKernel2D\\data\\surface.csv', signals.surface, delimiter=",")
 
 
 
