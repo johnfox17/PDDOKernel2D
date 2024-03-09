@@ -20,34 +20,35 @@ class create2DSignals:
         yCoords = yCoords.reshape(-1, 1)
         self.PDDOCoordinateMesh = np.array([xCoords[:,0], yCoords[:,0]]).T
     
-    def createSphericalSurface(self):
-        self.sphericalSurface = np.array((self.PDDOCoordinateMesh[:,0]-0.5)**2 + (self.PDDOCoordinateMesh[:,1]-0.5)**2).reshape((self.Nx,self.Ny))
-
-    def createCylindricalSurface(self):
-        self.cylindricalSurface = np.zeros(self.Nx*self.Ny)
-        centerIndex = np.linalg.norm(np.array([self.PDDOCoordinateMesh[:,0]-0.5, \
-                self.PDDOCoordinateMesh[:,1]-0.5]),axis=0).argmin()
-        self.cylindricalSurface[np.where(np.linalg.norm(np.array([self.PDDOCoordinateMesh[:,0] - \
-                self.PDDOCoordinateMesh[centerIndex,0], self.PDDOCoordinateMesh[:,1] - \
-                self.PDDOCoordinateMesh[centerIndex,1]]),axis=0)<0.25)] = 1
-        self.cylindricalSurface = self.cylindricalSurface.reshape((self.Nx,self.Ny))
-
-    
     def createSurface(self):
         self.surface = np.zeros(self.Nx*self.Ny)
         for iCoord in range(self.Nx*self.Ny):
-            self.surface[iCoord] = -3*self.PDDOCoordinateMesh[iCoord,0]**2+2*self.PDDOCoordinateMesh[iCoord,1]**2+1
+            self.surface[iCoord] = self.PDDOCoordinateMesh[iCoord,0]**2*self.PDDOCoordinateMesh[iCoord,1]**2
         self.surface = self.surface.reshape((self.Nx,self.Ny))
+    
+    def calculateAnalyticalXDerivativeOfSurface(self):
+        self.analyticalXDerivativeOfSurface = np.zeros(self.Nx*self.Ny)
+        for iCoord in range(self.Nx*self.Ny):
+            self.analyticalXDerivativeOfSurface[iCoord] = self.PDDOCoordinateMesh[iCoord,1]**2
+        self.analyticalXDerivativeOfSurface = self.analyticalXDerivativeOfSurface.reshape((self.Nx,self.Ny))
 
+    def calculateAnalyticalYDerivativeOfSurface(self):
+        self.analyticalYDerivativeOfSurface = np.zeros(self.Nx*self.Ny)
+        for iCoord in range(self.Nx*self.Ny):
+            self.analyticalYDerivativeOfSurface[iCoord] = self.PDDOCoordinateMesh[iCoord,0]**2
+        self.analyticalYDerivativeOfSurface = self.analyticalYDerivativeOfSurface.reshape((self.Nx,self.Ny))
+
+    def calculateAnalyticalLaplacianOfSurface(self):
+        self.analyticalLaplacianOfSurface = self.analyticalXDerivativeOfSurface + self.analyticalYDerivativeOfSurface
 
     def addNoise(self):
         noise = np.random.normal(0, 0.15, size= (self.Nx, self.Ny))
-        self.sphericalSurfaceNoisy = self.sphericalSurface + noise
-        self.cylindricalSurfaceNoisy = self.cylindricalSurface + noise
+        self.surfaceNoisy = self.surface + noise
 
     def solve(self):
         self.createCoordinates()
-        self.createSphericalSurface()
-        self.createCylindricalSurface()
         self.createSurface()
+        self.calculateAnalyticalXDerivativeOfSurface()
+        self.calculateAnalyticalYDerivativeOfSurface()
+        self.calculateAnalyticalLaplacianOfSurface()
         self.addNoise()
