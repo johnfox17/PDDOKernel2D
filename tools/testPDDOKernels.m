@@ -1,8 +1,8 @@
 close all;
 clear all;
 
-addpath('..\data')
-addpath('C:\Users\docta\Documents\Thesis\FourthPDENoiseRemovalPDDO\data')
+addpath('../data/output')
+%addpath('C:\Users\docta\Documents\Thesis\FourthPDENoiseRemovalPDDO\data')
 g20 = table2array(readtable('g20.csv'));
 g02 = table2array(readtable('g02.csv'));
 
