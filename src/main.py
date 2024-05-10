@@ -13,20 +13,24 @@ def main():
     signals.solve()
 
     
-    np.savetxt('C:\\Users\\docta\\Documents\\Thesis\\PDDOKernel2D\\data\\PDDOKernelMesh.csv', PDDOKernel2nd.PDDOKernelMesh, delimiter=",")
+    np.savetxt('../data/output/PDDOKernelMesh.csv', PDDOKernel2nd.PDDOKernelMesh, delimiter=",")
 
-    np.savetxt('C:\\Users\\docta\\Documents\\Thesis\\PDDOKernel2D\\data\\g20.csv', PDDOKernel2nd.g20, delimiter=",")
-    np.savetxt('C:\\Users\\docta\\Documents\\Thesis\\PDDOKernel2D\\data\\g02.csv', PDDOKernel2nd.g02, delimiter=",")
+    np.savetxt('../data/output/g20.csv', PDDOKernel2nd.g20, delimiter=",")
+    np.savetxt('../data/output/g02.csv', PDDOKernel2nd.g02, delimiter=",")
 
-    np.savetxt('C:\\Users\\docta\\Documents\\Thesis\\PDDOKernel2D\\data\\PDDOKernelCoordinateMesh.csv', signals.PDDOCoordinateMesh, delimiter=",")
+    np.savetxt('../data/output/PDDOKernelCoordinateMesh.csv', signals.PDDOCoordinateMesh, delimiter=",")
     
-    np.savetxt('C:\\Users\\docta\\Documents\\Thesis\\PDDOKernel2D\\data\\surface.csv', signals.surface, delimiter=",")
+    np.savetxt('../data/output/surface.csv', signals.surface, delimiter=",")
     
-    np.savetxt('C:\\Users\\docta\\Documents\\Thesis\\PDDOKernel2D\\data\\analyticalXDerivativeOfSurface.csv', signals.analyticalXDerivativeOfSurface, delimiter=",")
+    np.savetxt('../data/output/analyticalXDerivativeOfSurface.csv', signals.analyticalXDerivativeOfSurface, delimiter=",")
     
-    np.savetxt('C:\\Users\\docta\\Documents\\Thesis\\PDDOKernel2D\\data\\analyticalYDerivativeOfSurface.csv', signals.analyticalYDerivativeOfSurface, delimiter=",")
+    np.savetxt('../data/output/analyticalYDerivativeOfSurface.csv', signals.analyticalYDerivativeOfSurface, delimiter=",")
     
-    np.savetxt('C:\\Users\\docta\\Documents\\Thesis\\PDDOKernel2D\\data\\analyticalLaplacianOfSurface.csv', signals.analyticalLaplacianOfSurface, delimiter=",")
+    np.savetxt('../data/output/analyticalLaplacianOfSurface.csv', signals.analyticalLaplacianOfSurface, delimiter=",")
+
+    np.savetxt('../data/output/xXis.csv', PDDOKernel2nd.xXis, delimiter=",")
+
+    np.savetxt('../data/output/yXis.csv', PDDOKernel2nd.yXis, delimiter=",")
 
 
 

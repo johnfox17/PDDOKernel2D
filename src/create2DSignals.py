@@ -10,6 +10,10 @@ class create2DSignals:
         self.Ny = PDDOConstants.NY
         self.dx = self.l1/self.Nx
         self.dy = self.l2/self.Ny
+        self.A = PDDOConstants.A
+        self.B = PDDOConstants.B
+        self.N = PDDOConstants.N
+        self.M = PDDOConstants.M
 
     def createCoordinates(self):
         indexing = 'xy'
@@ -23,19 +27,21 @@ class create2DSignals:
     def createSurface(self):
         self.surface = np.zeros(self.Nx*self.Ny)
         for iCoord in range(self.Nx*self.Ny):
-            self.surface[iCoord] = self.PDDOCoordinateMesh[iCoord,0]**2*self.PDDOCoordinateMesh[iCoord,1]**2
+            self.surface[iCoord] = self.A*self.PDDOCoordinateMesh[iCoord,0]**self.M*self.B*self.PDDOCoordinateMesh[iCoord,1]**self.N
         self.surface = self.surface.reshape((self.Nx,self.Ny))
     
     def calculateAnalyticalXDerivativeOfSurface(self):
         self.analyticalXDerivativeOfSurface = np.zeros(self.Nx*self.Ny)
         for iCoord in range(self.Nx*self.Ny):
-            self.analyticalXDerivativeOfSurface[iCoord] = self.PDDOCoordinateMesh[iCoord,1]**2
+            self.analyticalXDerivativeOfSurface[iCoord] = (self.A)*(self.M)*(self.M-1)*self.PDDOCoordinateMesh[iCoord,0]**(self.M-2)*\
+                    (self.B)*self.PDDOCoordinateMesh[iCoord,1]**(self.N)
         self.analyticalXDerivativeOfSurface = self.analyticalXDerivativeOfSurface.reshape((self.Nx,self.Ny))
 
     def calculateAnalyticalYDerivativeOfSurface(self):
         self.analyticalYDerivativeOfSurface = np.zeros(self.Nx*self.Ny)
         for iCoord in range(self.Nx*self.Ny):
-            self.analyticalYDerivativeOfSurface[iCoord] = self.PDDOCoordinateMesh[iCoord,0]**2
+            self.analyticalYDerivativeOfSurface[iCoord] = (self.A)*self.PDDOCoordinateMesh[iCoord,0]**self.M*\
+                    (self.B)*(self.N)*(self.N-1)*self.PDDOCoordinateMesh[iCoord,1]**(self.N-2)
         self.analyticalYDerivativeOfSurface = self.analyticalYDerivativeOfSurface.reshape((self.Nx,self.Ny))
 
     def calculateAnalyticalLaplacianOfSurface(self):

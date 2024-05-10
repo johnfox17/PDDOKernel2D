@@ -27,6 +27,7 @@ class secondOrderDerivativePDDOKernel:
         xCoords = xCoords.reshape(-1, 1)
         yCoords = yCoords.reshape(-1, 1)
         self.PDDOKernelMesh = np.array([xCoords[:,0], yCoords[:,0]]).T
+    
     def calculateXis(self):
         midPDDONodeCoords = self.PDDOKernelMesh[int((len(self.PDDOKernelMesh)-1)/2),:]
         self.xXis = midPDDONodeCoords[0]-self.PDDOKernelMesh[:,0]
@@ -54,8 +55,10 @@ class secondOrderDerivativePDDOKernel:
             weight = np.exp(-4*(xiMag/deltaMag)**2)
             g20.append((self.dx*self.dy/(self.horizon**2*self.dx**2))*weight*(np.inner(solve(diffMat,self.bVec20), pList)))
             g02.append((self.dx*self.dy/(self.horizon**2*self.dy**2))*weight*(np.inner(solve(diffMat,self.bVec02), pList)))
+        
         self.g20 = np.array(g20).reshape((self.kernelDim,self.kernelDim))
         self.g02 = np.array(g02).reshape((self.kernelDim,self.kernelDim))
+    
     def createPDDOKernels(self):
         self.calculateXis()
         self.calculateGPolynomials()
