@@ -53,11 +53,12 @@ class secondOrderDerivativePDDOKernel:
             pList = np.array([1, currentXXi/deltaMag, currentYXi/deltaMag, (currentXXi/deltaMag)**2, \
                     (currentYXi/deltaMag)**2, (currentXXi/deltaMag)*(currentYXi/deltaMag)])
             weight = np.exp(-4*(xiMag/deltaMag)**2)
-            g20.append((self.dx*self.dy/(self.horizon**2*self.dx**2))*weight*(np.inner(solve(diffMat,self.bVec20), pList)))
-            g02.append((self.dx*self.dy/(self.horizon**2*self.dy**2))*weight*(np.inner(solve(diffMat,self.bVec02), pList)))
+            g20.append((self.dx*self.dy/((np.sqrt(2)*self.horizon*self.dx)**2))*weight*(np.inner(solve(diffMat,self.bVec20), pList)))
+            g02.append((self.dx*self.dy/((np.sqrt(2)*self.horizon*self.dy)**2))*weight*(np.inner(solve(diffMat,self.bVec02), pList)))
         
         self.g20 = np.array(g20).reshape((self.kernelDim,self.kernelDim))
         self.g02 = np.array(g02).reshape((self.kernelDim,self.kernelDim))
+        self.gLaplacian = self.g20+self.g02
     
     def createPDDOKernels(self):
         self.calculateXis()

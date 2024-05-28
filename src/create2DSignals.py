@@ -27,25 +27,40 @@ class create2DSignals:
     def createSurface(self):
         self.surface = np.zeros(self.Nx*self.Ny)
         for iCoord in range(self.Nx*self.Ny):
-            self.surface[iCoord] = self.A*self.PDDOCoordinateMesh[iCoord,0]**self.M*self.B*self.PDDOCoordinateMesh[iCoord,1]**self.N
+            self.surface[iCoord] = self.A*(self.PDDOCoordinateMesh[iCoord,0]**self.M) + self.B*(self.PDDOCoordinateMesh[iCoord,1]**self.N)
         self.surface = self.surface.reshape((self.Nx,self.Ny))
     
-    def calculateAnalyticalXDerivativeOfSurface(self):
-        self.analyticalXDerivativeOfSurface = np.zeros(self.Nx*self.Ny)
+    
+    def calculateAnalyticalFirstOrderXDerivativeOfSurface(self):
+        self.analyticalFirstOrderXDerivativeOfSurface = np.zeros(self.Nx*self.Ny)
         for iCoord in range(self.Nx*self.Ny):
-            self.analyticalXDerivativeOfSurface[iCoord] = (self.A)*(self.M)*(self.M-1)*self.PDDOCoordinateMesh[iCoord,0]**(self.M-2)*\
-                    (self.B)*self.PDDOCoordinateMesh[iCoord,1]**(self.N)
-        self.analyticalXDerivativeOfSurface = self.analyticalXDerivativeOfSurface.reshape((self.Nx,self.Ny))
+            self.analyticalFirstOrderXDerivativeOfSurface[iCoord] = (self.A)*(self.M)*(self.PDDOCoordinateMesh[iCoord,0]**(self.M-1))
+        self.analyticalFirstOrderXDerivativeOfSurface = self.analyticalFirstOrderXDerivativeOfSurface.reshape((self.Nx,self.Ny))
 
-    def calculateAnalyticalYDerivativeOfSurface(self):
-        self.analyticalYDerivativeOfSurface = np.zeros(self.Nx*self.Ny)
+    def calculateAnalyticalFirstOrderYDerivativeOfSurface(self):
+        self.analyticalFirstOrderYDerivativeOfSurface = np.zeros(self.Nx*self.Ny)
         for iCoord in range(self.Nx*self.Ny):
-            self.analyticalYDerivativeOfSurface[iCoord] = (self.A)*self.PDDOCoordinateMesh[iCoord,0]**self.M*\
-                    (self.B)*(self.N)*(self.N-1)*self.PDDOCoordinateMesh[iCoord,1]**(self.N-2)
-        self.analyticalYDerivativeOfSurface = self.analyticalYDerivativeOfSurface.reshape((self.Nx,self.Ny))
+            self.analyticalFirstOrderYDerivativeOfSurface[iCoord] =  self.B*(self.N)*(self.PDDOCoordinateMesh[iCoord,1]**(self.N-1))
+        self.analyticalFirstOrderYDerivativeOfSurface = self.analyticalFirstOrderYDerivativeOfSurface.reshape((self.Nx,self.Ny))
+
+
+    def calculateAnalyticalSecondOrderXDerivativeOfSurface(self):
+        self.analyticalSecondOrderXDerivativeOfSurface = np.zeros(self.Nx*self.Ny)
+        for iCoord in range(self.Nx*self.Ny):
+            self.analyticalSecondOrderXDerivativeOfSurface[iCoord] = (self.A)*(self.M)*(self.M-1)*(self.PDDOCoordinateMesh[iCoord,0]**(self.M-2))
+        self.analyticalSecondOrderXDerivativeOfSurface = self.analyticalSecondOrderXDerivativeOfSurface.reshape((self.Nx,self.Ny))
+
+    def calculateAnalyticalSecondOrderYDerivativeOfSurface(self):
+        self.analyticalSecondOrderYDerivativeOfSurface = np.zeros(self.Nx*self.Ny)
+        for iCoord in range(self.Nx*self.Ny):
+            self.analyticalSecondOrderYDerivativeOfSurface[iCoord] = self.B*(self.N)*(self.N-1)*(self.PDDOCoordinateMesh[iCoord,1]**(self.N-2))
+        self.analyticalSecondOrderYDerivativeOfSurface = self.analyticalSecondOrderYDerivativeOfSurface.reshape((self.Nx,self.Ny))
+
+    def calculateAnalyticalGradientOfSurface(self):
+        self.analyticalGradientOfSurface = self.analyticalFirstOrderXDerivativeOfSurface + self.analyticalFirstOrderYDerivativeOfSurface
 
     def calculateAnalyticalLaplacianOfSurface(self):
-        self.analyticalLaplacianOfSurface = self.analyticalXDerivativeOfSurface + self.analyticalYDerivativeOfSurface
+        self.analyticalLaplacianOfSurface = self.analyticalSecondOrderXDerivativeOfSurface + self.analyticalSecondOrderYDerivativeOfSurface
 
     def addNoise(self):
         noise = np.random.normal(0, 0.15, size= (self.Nx, self.Ny))
@@ -54,7 +69,10 @@ class create2DSignals:
     def solve(self):
         self.createCoordinates()
         self.createSurface()
-        self.calculateAnalyticalXDerivativeOfSurface()
-        self.calculateAnalyticalYDerivativeOfSurface()
+        self.calculateAnalyticalFirstOrderXDerivativeOfSurface()
+        self.calculateAnalyticalFirstOrderYDerivativeOfSurface()
+        self.calculateAnalyticalGradientOfSurface()
+        self.calculateAnalyticalSecondOrderXDerivativeOfSurface()
+        self.calculateAnalyticalSecondOrderYDerivativeOfSurface()
         self.calculateAnalyticalLaplacianOfSurface()
         self.addNoise()
