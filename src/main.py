@@ -1,6 +1,7 @@
 import numpy as np
 import firstOrderDerivativePDDOKernel as PDDOKernel1stOrder
 import secondOrderDerivativePDDOKernel as PDDOKernel2ndOrder
+import firstOrderXFirstOrderYDerivativePDDOKernel as PDDOKernel11Order
 import create2DSignals
 from scipy import signal
 
@@ -9,6 +10,9 @@ def main():
 
     PDDOKernel1st = PDDOKernel1stOrder.firstOrderDerivativePDDOKernel()
     PDDOKernel1st.solve()
+    
+    PDDOKernel1st1st = PDDOKernel11Order.firstOrderXFirstOrderYDerivativePDDOKernel()
+    PDDOKernel1st1st.solve()
 
     PDDOKernel2nd = PDDOKernel2ndOrder.secondOrderDerivativePDDOKernel()
     PDDOKernel2nd.solve()
@@ -22,6 +26,8 @@ def main():
     np.savetxt('../data/output/g01.csv', PDDOKernel1st.g01, delimiter=",")
     np.savetxt('../data/output/gGradient.csv', PDDOKernel1st.gGradient, delimiter=",")
 
+    #First Order X and First Order X Derivatives
+    np.savetxt('../data/output/g11.csv', PDDOKernel1st1st.g11, delimiter=",")
     
     #Second Order Derivative
     np.savetxt('../data/output/PDDOKernelMesh2ndOrder.csv', PDDOKernel2nd.PDDOKernelMesh, delimiter=",")

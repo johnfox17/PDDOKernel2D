@@ -7,6 +7,8 @@ g10 = table2array(readtable('g10.csv'));
 g01 = table2array(readtable('g01.csv'));
 gGradient = table2array(readtable('gGradient.csv'));
 
+g11 = table2array(readtable('g11.csv'));
+
 g20 = table2array(readtable('g20.csv'));
 g02 = table2array(readtable('g02.csv'));
 
@@ -33,7 +35,14 @@ grid on;
 title('PDDO Kernel Gradient of Surface (Diagonal)')
 legend('PDDO','Analytical');
 
-
+firstXFirstYDerivative = conv2(surface, g11,'same');
+% analyticalLaplacianOfSurface =analyticalLaplacianOfSurface(4:end-3,4:end-3);
+figure; plot(diag(firstXFirstYDerivative(6:end-5,6:end-5)),'o')
+hold on;
+plot(diag(analyticalGradientOfSurface(6:end-5,6:end-5)),'^')
+grid on;
+title('PDDO Kernel Gradient of Surface (Diagonal)')
+legend('PDDO','Analytical');
 
 
 LaplacianOfSurface = conv2(surface, g20+g02,'same');

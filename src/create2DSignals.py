@@ -36,7 +36,13 @@ class create2DSignals:
         for iCoord in range(self.Nx*self.Ny):
             self.analyticalFirstOrderXDerivativeOfSurface[iCoord] = (self.A)*(self.M)*(self.PDDOCoordinateMesh[iCoord,0]**(self.M-1))
         self.analyticalFirstOrderXDerivativeOfSurface = self.analyticalFirstOrderXDerivativeOfSurface.reshape((self.Nx,self.Ny))
-
+    
+    def calculateAnalyticalFirstOrderXFirstOrderYDerivativeOfSurface(self):
+        self.analyticalFirstOrderXFirstOrderYDerivativeOfSurface = np.zeros(self.Nx*self.Ny)
+        #for iCoord in range(self.Nx*self.Ny):
+        #    self.analyticalFirstOrderXDerivativeOfSurface[iCoord] = (self.A)*(self.M)*(self.PDDOCoordinateMesh[iCoord,0]**(self.M-1))
+        #    self.analyticalFirstOrderXDerivativeOfSurface = self.analyticalFirstOrderXDerivativeOfSurface.reshape((self.Nx,self.Ny))
+    
     def calculateAnalyticalFirstOrderYDerivativeOfSurface(self):
         self.analyticalFirstOrderYDerivativeOfSurface = np.zeros(self.Nx*self.Ny)
         for iCoord in range(self.Nx*self.Ny):
@@ -71,6 +77,7 @@ class create2DSignals:
         self.createSurface()
         self.calculateAnalyticalFirstOrderXDerivativeOfSurface()
         self.calculateAnalyticalFirstOrderYDerivativeOfSurface()
+        self.calculateAnalyticalFirstOrderXFirstOrderYDerivativeOfSurface()
         self.calculateAnalyticalGradientOfSurface()
         self.calculateAnalyticalSecondOrderXDerivativeOfSurface()
         self.calculateAnalyticalSecondOrderYDerivativeOfSurface()
