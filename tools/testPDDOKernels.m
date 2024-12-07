@@ -2,21 +2,21 @@ close all;
 clear all;
 
 addpath('../data/output')
-%addpath('C:\Users\docta\Documents\Thesis\FourthPDENoiseRemovalPDDO\data')
+
 g10 = table2array(readtable('g10.csv'));
 g01 = table2array(readtable('g01.csv'));
 gGradient = table2array(readtable('gGradient.csv'));
 
-g11 = table2array(readtable('g11.csv'));
-
 g20 = table2array(readtable('g20.csv'));
 g02 = table2array(readtable('g02.csv'));
 
-SignalMesh = table2array(readtable('signalCoordinateMesh.csv'));
+%Read coordinate meshes
 PDDOKernelCoordinateMesh1stOrder = table2array(readtable('PDDOKernelMesh1stOrder.csv'));
 PDDOKernelCoordinateMesh2ndOrder = table2array(readtable('PDDOKernelMesh2ndOrder.csv'));
-surface = table2array(readtable('surface.csv'));
+SignalMesh = table2array(readtable('signalCoordinateMesh.csv'));
 
+%Read Surfaces
+surface = table2array(readtable('surface.csv'));
 analyticalFirstOrderXDerivativeOfSurface = table2array(readtable('analyticalFirstOrderXDerivativeOfSurface.csv'));
 analyticalFirstOrderYDerivativeOfSurface = table2array(readtable('analyticalFirstOrderYDerivativeOfSurface.csv'));
 analyticalGradientOfSurface = table2array(readtable('analyticalGradientOfSurface.csv'));
@@ -25,35 +25,84 @@ analyticalSecondOrderXDerivativeOfSurface = table2array(readtable('analyticalSec
 analyticalSecondOrderYDerivativeOfSurface = table2array(readtable('analyticalSecondOrderYDerivativeOfSurface.csv'));
 analyticalLaplacianOfSurface = table2array(readtable('analyticalLaplacianOfSurface.csv'));
 
+Nx = 512;
+Ny = 512;
 
-GradientOfSurface = conv2(surface, gGradient,'same');
-% analyticalLaplacianOfSurface =analyticalLaplacianOfSurface(4:end-3,4:end-3);
-figure; plot(diag(GradientOfSurface(6:end-5,6:end-5)),'o')
-hold on;
-plot(diag(analyticalGradientOfSurface(6:end-5,6:end-5)),'^')
+%Plot kernels
+%g10
+figure; surf( g10)
+xlabel('x','FontSize',14)
+ylabel('y','FontSize',14)
+zlabel('z','FontSize',14)
+% title('X Derivative PDDO Kernel (g^{10})')
+ax = gca;
+ax.FontSize = 12;
+colormap winter;
+%g01
+figure; surf( g01)
+xlabel('x','FontSize',14)
+ylabel('y','FontSize',14)
+zlabel('z','FontSize',14)
+% title('Y Derivative PDDO Kernel (g^{01})')
+ax = gca;
+ax.FontSize = 12;
+colormap winter;
+%g20+g02
+figure; surf(g20+g02)
+xlabel('x','FontSize',14)
+ylabel('y','FontSize',14)
+zlabel('z','FontSize',14)
+
+% title('Laplacian PDDO Kernel (g^{20} + g^{02})')
+ax = gca;
+ax.FontSize = 12;
+colormap winter;
+%Reshape Mesh
+SignalMeshX = reshape(SignalMesh(:,1),[Nx Ny]);
+SignalMeshY = reshape(SignalMesh(:,2),[Nx Ny]);
+
+%Plot original surface
+figure; surf(SignalMeshX, SignalMeshY, surface);
+xlabel('x','FontSize',14)
+ylabel('y','FontSize',14)
+zlabel('z','FontSize',14)
+ax = gca;
+ax.FontSize = 12;
+legend('z = x^2 + y^2', 'FontSize',14)
+% title('Two-Dimensional Surface')
+
+%Gradient in X
+GradientXOfSurface = conv2(surface, g10,'same');
+%Error Gradient of X
+figure; plot(abs(GradientXOfSurface(6:end-5,6:end-5)-analyticalFirstOrderXDerivativeOfSurface(6:end-5,6:end-5)),'o')
+% title('Derivative Respect to X Error');
 grid on;
-title('PDDO Kernel Gradient of Surface (Diagonal)')
-legend('PDDO','Analytical');
-
-firstXFirstYDerivative = conv2(surface, g11,'same');
-% analyticalLaplacianOfSurface =analyticalLaplacianOfSurface(4:end-3,4:end-3);
-figure; plot(diag(firstXFirstYDerivative(6:end-5,6:end-5)),'o')
-hold on;
-plot(diag(analyticalGradientOfSurface(6:end-5,6:end-5)),'^')
+xlabel('x','FontSize',14)
+ylabel('y','FontSize',14)
+zlabel('z','FontSize',14)
+ax = gca;
+ax.FontSize = 12;
+%Gradient in Y
+GradientYOfSurface = conv2(surface, g01,'same');
+%Error Gradient of Y
+figure; plot(abs(GradientYOfSurface(6:end-5,6:end-5)-analyticalFirstOrderYDerivativeOfSurface(6:end-5,6:end-5)),'o')
+% title('Derivative Respect to Y Error');
 grid on;
-title('PDDO Kernel Gradient of Surface (Diagonal)')
-legend('PDDO','Analytical');
-
-
+xlabel('x','FontSize',14)
+ylabel('y','FontSize',14)
+zlabel('z','FontSize',14)
+ax = gca;
+ax.FontSize = 12;
+%Laplacian
 LaplacianOfSurface = conv2(surface, g20+g02,'same');
-% analyticalLaplacianOfSurface =analyticalLaplacianOfSurface(4:end-3,4:end-3);
-figure; plot(diag(LaplacianOfSurface(6:end-5,6:end-5)),'o')
-hold on;
-plot(diag(analyticalLaplacianOfSurface(6:end-5,6:end-5)),'^')
+figure; plot(abs(LaplacianOfSurface(6:end-5,6:end-5)-analyticalLaplacianOfSurface(6:end-5,6:end-5)),'o');
+% title('Laplacian Error');
 grid on;
-title('PDDO Kernel Laplacian of Surface (Diagonal)')
-legend('PDDO','Analytical');
-ylim([0 5])
+xlabel('x','FontSize',14)
+ylabel('y','FontSize',14)
+zlabel('z','FontSize',14)
+ax = gca;
+ax.FontSize = 12;
 
 GradientOfSurface = GradientOfSurface(6:end-5,6:end-5);
 GradientOfSurface = GradientOfSurface(:);
@@ -65,7 +114,32 @@ LaplacianOfSurface = LaplacianOfSurface(:);
 analyticalLaplacianOfSurface = analyticalLaplacianOfSurface(6:end-5,6:end-5);
 analyticalLaplacianOfSurface = analyticalLaplacianOfSurface(:);
 
-
 RMSEGradient = sqrt(mean((analyticalGradientOfSurface - GradientOfSurface).^2));
 RMSELaplacian = sqrt(mean((analyticalLaplacianOfSurface - LaplacianOfSurface).^2));
+
+
+% figure; plot(diag(GradientXOfSurface(6:end-5,6:end-5)),'o')
+% hold on;
+% plot(diag(analyticalFirstOrderXDerivativeOfSurface(6:end-5,6:end-5)),'^')
+% grid on;
+% title('PDDO Kernel Derivative Respect to X of Surface (Diagonal)')
+% legend('PDDO','Analytical');
+
+% figure; plot(diag(GradientYOfSurface(6:end-5,6:end-5)),'o')
+% hold on;
+% plot(diag(analyticalFirstOrderYDerivativeOfSurface(6:end-5,6:end-5)),'^')
+% grid on;
+% title('PDDO Kernel Derivative Respect to Y of Surface (Diagonal)')
+% legend('PDDO','Analytical');
+
+% figure; plot(diag(LaplacianOfSurface(6:end-5,6:end-5)),'o')
+% hold on;
+% plot(diag(analyticalLaplacianOfSurface(6:end-5,6:end-5)),'^')
+% grid on;
+% title('PDDO Kernel Laplacian of Surface (Diagonal)')
+% legend('PDDO','Analytical');
+% ylim([0 5])
+
+
+
 
