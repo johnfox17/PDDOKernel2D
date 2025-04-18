@@ -36,7 +36,7 @@ ylabel('y','FontSize',14)
 zlabel('z','FontSize',14)
 % title('X Derivative PDDO Kernel (g^{10})')
 ax = gca;
-ax.FontSize = 12;
+ax.FontSize = 14;
 colormap winter;
 %g01
 figure; surf( g01)
@@ -45,7 +45,7 @@ ylabel('y','FontSize',14)
 zlabel('z','FontSize',14)
 % title('Y Derivative PDDO Kernel (g^{01})')
 ax = gca;
-ax.FontSize = 12;
+ax.FontSize = 14;
 colormap winter;
 %g20+g02
 figure; surf(g20+g02)
@@ -55,54 +55,56 @@ zlabel('z','FontSize',14)
 
 % title('Laplacian PDDO Kernel (g^{20} + g^{02})')
 ax = gca;
-ax.FontSize = 12;
+ax.FontSize = 14;
 colormap winter;
 %Reshape Mesh
 SignalMeshX = reshape(SignalMesh(:,1),[Nx Ny]);
 SignalMeshY = reshape(SignalMesh(:,2),[Nx Ny]);
-
+SignalXCoords = 1/(2*Nx):1/Nx:1;
+SignalYCords = 1/(2*Ny):1/Ny:1;
 %Plot original surface
-figure; surf(SignalMeshX, SignalMeshY, surface);
-xlabel('x','FontSize',14)
-ylabel('y','FontSize',14)
-zlabel('z','FontSize',14)
+%figure; imagesc(SignalMeshX, SignalMeshY, surface);
+figure; imagesc(SignalXCoords, SignalYCords, surface);
+xlabel('x_1','FontSize',14)
+ylabel('y_2','FontSize',14)
+colorbar;
 ax = gca;
-ax.FontSize = 12;
-legend('z = x^2 + y^2', 'FontSize',14)
+ax.FontSize = 14;
 % title('Two-Dimensional Surface')
 
 %Gradient in X
 GradientXOfSurface = conv2(surface, g10,'same');
 %Error Gradient of X
-figure; plot(abs(GradientXOfSurface(6:end-5,6:end-5)-analyticalFirstOrderXDerivativeOfSurface(6:end-5,6:end-5)),'o')
+figure; imagesc(SignalXCoords, SignalYCords,abs(GradientXOfSurface(6:end-5,6:end-5)-analyticalFirstOrderXDerivativeOfSurface(6:end-5,6:end-5)))
+colorbar;
 % title('Derivative Respect to X Error');
 grid on;
-xlabel('x','FontSize',14)
-ylabel('y','FontSize',14)
-zlabel('z','FontSize',14)
+xlabel('x_1','FontSize',14)
+ylabel('x_2','FontSize',14)
+
 ax = gca;
-ax.FontSize = 12;
+ax.FontSize = 14;
 %Gradient in Y
 GradientYOfSurface = conv2(surface, g01,'same');
 %Error Gradient of Y
-figure; plot(abs(GradientYOfSurface(6:end-5,6:end-5)-analyticalFirstOrderYDerivativeOfSurface(6:end-5,6:end-5)),'o')
+figure; imagesc(SignalXCoords, SignalYCords,abs(GradientYOfSurface(6:end-5,6:end-5)-analyticalFirstOrderYDerivativeOfSurface(6:end-5,6:end-5)))
 % title('Derivative Respect to Y Error');
 grid on;
-xlabel('x','FontSize',14)
-ylabel('y','FontSize',14)
-zlabel('z','FontSize',14)
+xlabel('x_1','FontSize',14)
+ylabel('x_2','FontSize',14)
+colorbar;
 ax = gca;
-ax.FontSize = 12;
+ax.FontSize = 14;
 %Laplacian
 LaplacianOfSurface = conv2(surface, g20+g02,'same');
-figure; plot(abs(LaplacianOfSurface(6:end-5,6:end-5)-analyticalLaplacianOfSurface(6:end-5,6:end-5)),'o');
+figure; imagesc(SignalXCoords, SignalYCords,abs(LaplacianOfSurface(6:end-5,6:end-5)-analyticalLaplacianOfSurface(6:end-5,6:end-5)));
 % title('Laplacian Error');
 grid on;
-xlabel('x','FontSize',14)
-ylabel('y','FontSize',14)
-zlabel('z','FontSize',14)
+xlabel('x_1','FontSize',14)
+ylabel('x_2','FontSize',14)
+colorbar;
 ax = gca;
-ax.FontSize = 12;
+ax.FontSize = 14;
 
 GradientOfSurface = GradientOfSurface(6:end-5,6:end-5);
 GradientOfSurface = GradientOfSurface(:);
